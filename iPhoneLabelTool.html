@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<!-- Created By Parker Whiteford -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">s
+    <style>
+        #copied {
+            visibility: hidden;
+            background-color: lightgreen;
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding-top: 50px;
+        }
+        #barcode {
+            margin-top: 20px;
+        }
+
+	#label {
+    font-family: 'Arial', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <form>
+                    <div class="form-group">
+                        <label for="phone_model">Phone Model</label>
+                        <select id="phone_model" class="form-control" onchange="generateLabel()">
+		<option value="SE 22">iPhone SE 2022</option>
+		<option value="14 Pro Max">iPhone 14 Pro Max</option>
+		<option value="14 Pro">iPhone 14 Pro</option>
+		<option value="14 Plus">iPhone 14 Plus</option>
+		<option value="14">iPhone 14</option>
+		<option value="13 Pro Max">iPhone 13 Pro Max</option>
+		<option value="13 Pro">iPhone 13 Pro</option>
+		<option value="13">iPhone 13</option>
+		<option value="13 mini">iPhone 13 mini</option>
+		<option value="12 Pro Max">iPhone 12 Pro Max</option>
+		<option value="12 Pro">iPhone 12 Pro</option>
+		<option value="12">iPhone 12</option>
+		<option value="12 mini">iPhone 12 mini</option>
+		<option value="iPad Pro 12.9" ">iPad Pro 12.9 inch 5th gen</option>
+		<option value="iPad Pro 11" ">iPad Pro 11 inch 3rd gen</option>
+		<option value="10th gen">iPad 10th gen</option>
+		<option value="9th gen">iPad 9th gen</option>
+                            <!-- Add other options as needed -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="storage">Storage</label>
+                        <select id="storage" class="form-control" onchange="generateLabel()">
+		    <option value="64GB">64GB</option>
+                    <option value="128GB">128GB</option>
+                    <option value="256GB">256GB</option>
+                    <option value="512GB">512GB</option>
+                    <option value="1TB">1TB</option>
+                            <!-- Add other options as needed -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="color">Color</label>
+                        <select id="color" class="form-control" onchange="generateLabel()">
+<option value="Black">Black</option>
+<option value="White">White</option>	
+<option value="Blue">Blue</option>		
+<option value="Red">Red</option>
+<option value="Silver">Silver</option>
+<option value="Gold">Gold</option>
+<option value="Pink">Pink</option>
+<option value="Purple">Purple</option>
+<option value="Yellow">Yellow</option>
+<option value="Gray">Grey</option>
+                            <!-- Add other options as needed -->
+                        </select>
+                    </div>
+                </form>
+
+                <p id="label" class="font-weight-bold"></p>
+                <button class="btn btn-primary" onclick="copyToClipboard()">Copy to Clipboard</button>
+                <p id="copied">Copied!</p>
+            </div>
+            <div class="col-md-6">
+                <!-- Barcode generator -->
+                <div class="form-group">
+                    <label for="imei">Phone's IMEI</label>
+                    <input type="text" id="imei" class="form-control" onchange="generateBarcode()">
+                </div>
+
+                <canvas id="barcode"></canvas>
+                <button class="btn btn-primary mt-2" onclick="downloadBarcode()">Download Barcode</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateLabel() {
+            var model = document.getElementById('phone_model').value;
+            var storage = document.getElementById('storage').value;
+            var color = document.getElementById('color').value;
+            var date = new Date().toLocaleDateString();
+            var label = model + " " + color + " " + storage + " " + date;
+            document.getElementById('label').textContent = label;
+        }
+
+        function generateBarcode() {
+            var imei = document.getElementById('imei').value;
+            // Generate the barcode for the IMEI
+            JsBarcode("#barcode", imei, {
+                format: "CODE128",
+                lineColor: "#000",
+                width: 2,
+                height: 100,
+                displayValue: true
+            });
+        }
+
+        function copyToClipboard() {
+            var label = document.getElementById('label');
+            var selection = window.getSelection();
+            var range = document.createRange();
+            range.selectNodeContents(label);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.execCommand('copy');
+            document.getElementById('copied').style.visibility = 'visible';
+        }
+
+        function downloadBarcode() {
+            var canvas = document.getElementById("barcode");
+            var img = canvas.toDataURL("image/png");
+            var link = document.createElement('a');
+            link.download = 'barcode.png';
+            link.href = img;
+            link.click();
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
